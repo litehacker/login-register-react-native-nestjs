@@ -1,1 +1,1 @@
-# login-register-react-native-nextjs
+# Login screen with RN + NestJS + MongoDB
