@@ -8,16 +8,18 @@ type AuthContextInterface = {
   token: string | null;
   expiresAt: Date | null;
   loadingAuthState: boolean;
-  currentUser: UserCredential | undefined;
+  currentUser: string;
   signUp: (email: any, password: any) => Promise<UserCredential>;
   signIn: (email: any, password: any) => Promise<UserCredential>;
   signOut: () => void;
+  setCurrentUser?: any;
+  setToken?: any;
 };
 const authContextDefaults = {
   token: null,
   expiresAt: null,
   loadingAuthState: true,
-  currentUser: undefined,
+  currentUser: "",
   signUp: (email: any, password: any): Promise<UserCredential> => {
     console.log(email, password);
     return createUserWithEmailAndPassword(email, password);
@@ -38,30 +40,31 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: { children: any }) => {
-  const [currentUser, setCurrentUser] = React.useState<UserCredential>();
+  const [currentUser, setCurrentUser] =
+    React.useState<AuthContextInterface["currentUser"]>("");
 
-  const [loadingAuthState, setLoadingAuthState] = React.useState<boolean>(
-    authContextDefaults.loadingAuthState
-  );
-  React.useEffect(() => {
-    const unsubscribe = (aContextDefaults: any) => {
-      if (aContextDefaults.currentUser) {
-        setCurrentUser(aContextDefaults.currentUser);
-        setLoadingAuthState(false);
-      } else {
-        setCurrentUser(undefined);
-        setLoadingAuthState(false);
-      }
-    };
-    return unsubscribe(authContextDefaults);
-  }, []);
+  const [token, setToken] = React.useState<string>("");
+  // React.useEffect(() => {
+  //   const unsubscribe = (aContextDefaults: any) => {
+  //     if (aContextDefaults.currentUser) {
+  //       setCurrentUser(aContextDefaults.currentUser);
+  //       setLoadingAuthState(false);
+  //     } else {
+  //       setCurrentUser("");
+  //       setLoadingAuthState(false);
+  //     }
+  //   };
+  //   return unsubscribe(authContextDefaults);
+  // }, []);
 
   return (
     <AuthContext.Provider
       value={{
         ...authContextDefaults,
-        loadingAuthState: loadingAuthState,
         currentUser,
+        setCurrentUser,
+        token,
+        setToken,
       }}
     >
       {children}

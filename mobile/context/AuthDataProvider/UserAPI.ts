@@ -1,21 +1,22 @@
+import axios from "axios";
+import { env } from "../../config/env";
+
 export const createUserWithEmailAndPassword = (
   email: string,
   password: string
 ): Promise<UserCredential> => {
   return new Promise((resolve, reject) => {
-    const axios = require("axios");
-
     axios({
       method: "post",
-      url: "http://localhost:3000/auth/register",
+      url: `${env.API_URL}/auth/register`,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      data: JSON.stringify({
+      data: {
         email,
         password,
         created: Date.now(),
-      }),
+      },
     })
       .then(function (response: { data: UserCredential }) {
         resolve(response.data);
@@ -31,18 +32,17 @@ export const signInWithEmailAndPassword = (
   password: string
 ): Promise<UserCredential> => {
   return new Promise((resolve, reject) => {
-    const axios = require("axios");
     axios({
       method: "post",
-      url: "http://localhost:3000/auth/register",
+      url: `${env.API_URL}/auth/login`,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      data: JSON.stringify({
+      data: {
         email,
         password,
         created: Date.now(),
-      }),
+      },
     })
       .then(function (response: { data: any }) {
         resolve(response.data);

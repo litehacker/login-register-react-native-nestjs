@@ -55,7 +55,7 @@ function RootNavigator() {
 
   return (
     <Stack.Navigator>
-      {token ? (
+      {currentUser ? (
         <Stack.Screen
           name="Root"
           component={BottomTabNavigator}

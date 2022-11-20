@@ -14,19 +14,20 @@ import {
 import { useAuth } from "../context/AuthProvider";
 import { RootStackScreenProps } from "../types";
 import { Dimensions, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { env } from "../config/env";
 
 const window = Dimensions.get("window");
 const screen = Dimensions.get("screen");
 
 export const LoginScreen = ({ navigation }: RootStackScreenProps<"Login">) => {
+  const { signUp, signIn, currentUser, setCurrentUser } = useAuth();
+
   const [registerScreen, setRegisterScreen] = React.useState<boolean>(true);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const { signIn, currentUser } = useAuth();
   const [dimensions, setDimensions] = React.useState({ window, screen });
 
   React.useEffect(() => {
@@ -38,21 +39,9 @@ export const LoginScreen = ({ navigation }: RootStackScreenProps<"Login">) => {
     );
     return () => subscription?.remove();
   });
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-
-    setLoading(true);
-    setError("");
-    console.log("submitted");
-    signIn(email, password)
-      .then(() => {
-        console.log("successful Login");
-      })
-      .catch((e) => {
-        setLoading(false);
-        setError(e);
-      });
-  };
+  React.useEffect(() => {
+    console.log(currentUser);
+  }, [currentUser]);
 
   return (
     <TouchableWithoutFeedback
@@ -69,6 +58,7 @@ export const LoginScreen = ({ navigation }: RootStackScreenProps<"Login">) => {
         }}
       >
         <View style={styles.container}>
+          <Text style={{ color: "pink" }}>{error}</Text>
           <Image
             source={require("../assets/images/lock.png")}
             style={{ marginBottom: 24 }}
@@ -105,9 +95,32 @@ export const LoginScreen = ({ navigation }: RootStackScreenProps<"Login">) => {
             style={[styles.submitButton]}
             onPress={(e) => {
               e.preventDefault();
-              registerScreen
-                ? console.log("registerScreen")
-                : console.log("login");
+              if (registerScreen) {
+                console.log("registerScreen");
+                signUp(email, password)
+                  .then((r) => {
+                    console.log(r);
+                    setCurrentUser(r.user.email);
+                  })
+                  .catch((e) => {
+                    setLoading(false);
+                    console.log(e);
+                    setError("User already exists");
+                  });
+              } else {
+                console.log("login", env.API_URL);
+                setError("");
+                signIn(email, password)
+                  .then((r) => {
+                    console.log(r);
+                    setCurrentUser(r.user.email);
+                  })
+                  .catch((e) => {
+                    setLoading(false);
+                    console.log(e);
+                    setError("User doesn't exist or credentials are wrong");
+                  });
+              }
             }}
             accessibilityLabel="continue"
           >
@@ -130,7 +143,10 @@ export const LoginScreen = ({ navigation }: RootStackScreenProps<"Login">) => {
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.h2}>Don't have an account? </Text>
               <TouchableOpacity
-                onPress={() => setRegisterScreen((prev) => !prev)}
+                onPress={() => {
+                  setRegisterScreen((prev) => !prev);
+                  setError("");
+                }}
               >
                 <Text style={[styles.redirectButton]}>Create Account</Text>
               </TouchableOpacity>
@@ -139,7 +155,10 @@ export const LoginScreen = ({ navigation }: RootStackScreenProps<"Login">) => {
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.h2}>Already have an account? </Text>
               <TouchableOpacity
-                onPress={() => setRegisterScreen((prev) => !prev)}
+                onPress={() => {
+                  setRegisterScreen((prev) => !prev);
+                  setError("");
+                }}
               >
                 <Text style={[styles.redirectButton]}>Log In</Text>
               </TouchableOpacity>
