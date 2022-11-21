@@ -44,18 +44,6 @@ export const AuthProvider = ({ children }: { children: any }) => {
     React.useState<AuthContextInterface["currentUser"]>("");
 
   const [token, setToken] = React.useState<string>("");
-  // React.useEffect(() => {
-  //   const unsubscribe = (aContextDefaults: any) => {
-  //     if (aContextDefaults.currentUser) {
-  //       setCurrentUser(aContextDefaults.currentUser);
-  //       setLoadingAuthState(false);
-  //     } else {
-  //       setCurrentUser("");
-  //       setLoadingAuthState(false);
-  //     }
-  //   };
-  //   return unsubscribe(authContextDefaults);
-  // }, []);
 
   return (
     <AuthContext.Provider

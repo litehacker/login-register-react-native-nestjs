@@ -1,7 +1,5 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
-
-import EditScreenInfo from "../components/EditScreenInfo";
 import { Text, View } from "../components/Themed";
 import { useAuth } from "../context/AuthProvider";
 import { RootTabScreenProps } from "../types";
@@ -9,7 +7,7 @@ import { RootTabScreenProps } from "../types";
 export default function TabOneScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
-  const { currentUser, token, setCurrentUser } = useAuth();
+  const { currentUser, setCurrentUser } = useAuth();
 
   return (
     <View style={styles.container}>

@@ -2,7 +2,6 @@ import React from "react";
 import * as WebBrowser from "expo-web-browser";
 
 import {
-  KeyboardAvoidingView,
   View,
   TextInput,
   Text,
@@ -10,14 +9,11 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  StyleSheet,
 } from "react-native";
 import { useAuth } from "../context/AuthProvider";
 import { RootStackScreenProps } from "../types";
-import { Dimensions, StyleSheet } from "react-native";
 import { env } from "../config/env";
-
-const window = Dimensions.get("window");
-const screen = Dimensions.get("screen");
 
 export const LoginScreen = ({ navigation }: RootStackScreenProps<"Login">) => {
   const { signUp, signIn, currentUser, setCurrentUser } = useAuth();
@@ -28,17 +24,7 @@ export const LoginScreen = ({ navigation }: RootStackScreenProps<"Login">) => {
 
   const [error, setError] = React.useState("");
   const [loading, setLoading] = React.useState(false);
-  const [dimensions, setDimensions] = React.useState({ window, screen });
 
-  React.useEffect(() => {
-    const subscription = Dimensions.addEventListener(
-      "change",
-      ({ window, screen }) => {
-        setDimensions({ window, screen });
-      }
-    );
-    return () => subscription?.remove();
-  });
   React.useEffect(() => {
     console.log(currentUser);
   }, [currentUser]);
